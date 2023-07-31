@@ -9,30 +9,214 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
+    <link rel = "stylesheet" href = "assets/style/style.css">
     <title>Document</title>
 </head>
 <body>
     <div id = "master" class = "p-1">
-        <div class = "d-flex">
-            <section id = "search" class = "">
-
+        <div class = "top-bar p-2">
+            <h1 class = "d-flex text-light text-right p-1">Weather Dashboard</h1>
+        </div>
+        <div class = "d-flex p-2">
+            <section id = "search" class = "p-1">
+                <div class = "d-flex flex-column justify-content-center">
+                    <a href = "https://simplemaps.com/data/us-cities" target = "_blank" class = "text-center" style = "font-size: 75%; color:gray;">City information courtesy of simplemaps.com!</a>
+                    <h1>Search for a city:</h1>
+                    <input class = "m-1" id = "city-search" type = "text">
+                    <button class = "m-1">Search</button>
+                    <span class = "m-1 w-75" style = "height:0.5px;background-color: gray;"></span>
+                </div>
             </section>
-            <section id = "weather">
-                <div id = "current-weather">
-                    <h1>Atlanta</h1>
+            <section id = "weather" class = "p-1 w-50" style = "margin-left:1rem;">
+                <div id = "current-weather" class = "p-1">
+                    <div class = "d-flex">
+                        <h1 id = "city-name">...</h1>
+                        <h1 id = "date" style = "margin-left:1rem;">(1/1/1999)</h1>
+                        <img src = "#" id = "icon" style = "margin-left:1rem;">
+                    </div>
+                    <div>
+                        <div id = "temperature" class = "d-flex">
+                            <p>Temp:</p>
+                            <div class = "d-flex" style = "margin-left:0.5rem;">
+                                <p id = "temperature-value">70.00</p>
+                                <p id = "temperature-unit">°F</p>
+                            </div>
+                        </div>
+                        <div id = "wind" class = "d-flex">
+                            <p>Wind:</p>
+                            <div class = "d-flex"style = "margin-left:0.5rem;">
+                                <p id = "wind-value">70.00</p>
+                                <p  style = "margin-left:0.25rem;" id = "wind-unit">MPH</p>
+                            </div>
+                        </div>
+                        <div id = "humidity" class = "d-flex">
+                            <p>Humidity:</p>
+                            <div class = "d-flex"style = "margin-left:0.5rem;">
+                                <p id = "humidity-value">44.00</p>
+                                <p id = "humidity-unit">%</p>
+                            </div>
+                        </div>
+
+                    </div>
 
                 </div>
-                <div id = "forecast">
-                    <p></p>
+                <div id = "forecast" style = "margin-top:1rem;">
+                    <h3>5-day Forecast:</h3>
                     <div class = "d-flex" id = "forecast-display">
-                        
+                        <div class = "m-1 bg-dark p-3 rounded text-light">
+                            <h3>9/4/1999</h3>
+                            <p>☀️</p>
+                            <div>
+                                <div id = "temperature" class = "d-flex">
+                                    <p>Temp:</p>
+                                    <div class = "d-flex" style = "margin-left:0.5rem;">
+                                        <p id = "temperature-value">70.00</p>
+                                        <p id = "temperature-unit">°F</p>
+                                    </div>
+                                </div>
+                                <div id = "wind" class = "d-flex">
+                                    <p>Wind:</p>
+                                    <div class = "d-flex"style = "margin-left:0.5rem;">
+                                        <p id = "wind-value">70.00</p>
+                                        <p  style = "margin-left:0.25rem;" id = "wind-unit">MPH</p>
+                                    </div>
+                                </div>
+                                <div id = "humidity" class = "d-flex">
+                                    <p>Humidity:</p>
+                                    <div class = "d-flex"style = "margin-left:0.5rem;">
+                                        <p id = "humidity-value">44.00</p>
+                                        <p id = "humidity-unit">%</p>
+                                    </div>
+                                </div>
+        
+                            </div>
+                        </div>
+                        <div class = "m-1 bg-dark p-3 rounded text-light">
+                            <h3>9/4/1999</h3>
+                            <p>☀️</p>
+                            <div>
+                                <div class = "d-flex">
+                                    <p>Temp:</p>
+                                    <div class = "d-flex" style = "margin-left:0.5rem;">
+                                        <p>70.00</p>
+                                        <p>°F</p>
+                                    </div>
+                                </div>
+                                <div class = "d-flex">
+                                    <p>Wind:</p>
+                                    <div class = "d-flex"style = "margin-left:0.5rem;">
+                                        <p>70.00</p>
+                                        <p  style = "margin-left:0.25rem;">MPH</p>
+                                    </div>
+                                </div>
+                                <div class = "d-flex">
+                                    <p>Humidity:</p>
+                                    <div class = "d-flex"style = "margin-left:0.5rem;">
+                                        <p>44.00</p>
+                                        <p>%</p>
+                                    </div>
+                                </div>
+        
+                            </div>
+                        </div>
+                        <div class = "m-1 bg-dark p-3 rounded text-light">
+                            <h3>9/4/1999</h3>
+                            <p>☀️</p>
+                            <div>
+                                <div id = "temperature" class = "d-flex">
+                                    <p>Temp:</p>
+                                    <div class = "d-flex" style = "margin-left:0.5rem;">
+                                        <p id = "temperature-value">70.00</p>
+                                        <p id = "temperature-unit">°F</p>
+                                    </div>
+                                </div>
+                                <div id = "wind" class = "d-flex">
+                                    <p>Wind:</p>
+                                    <div class = "d-flex"style = "margin-left:0.5rem;">
+                                        <p id = "wind-value">70.00</p>
+                                        <p  style = "margin-left:0.25rem;" id = "wind-unit">MPH</p>
+                                    </div>
+                                </div>
+                                <div id = "humidity" class = "d-flex">
+                                    <p>Humidity:</p>
+                                    <div class = "d-flex"style = "margin-left:0.5rem;">
+                                        <p id = "humidity-value">44.00</p>
+                                        <p id = "humidity-unit">%</p>
+                                    </div>
+                                </div>
+        
+                            </div>
+                        </div>
+                        <div class = "m-1 bg-dark p-3 rounded text-light">
+                            <h3>9/4/1999</h3>
+                            <p>☀️</p>
+                            <div>
+                                <div id = "temperature" class = "d-flex">
+                                    <p>Temp:</p>
+                                    <div class = "d-flex" style = "margin-left:0.5rem;">
+                                        <p id = "temperature-value">70.00</p>
+                                        <p id = "temperature-unit">°F</p>
+                                    </div>
+                                </div>
+                                <div id = "wind" class = "d-flex">
+                                    <p>Wind:</p>
+                                    <div class = "d-flex"style = "margin-left:0.5rem;">
+                                        <p id = "wind-value">70.00</p>
+                                        <p  style = "margin-left:0.25rem;" id = "wind-unit">MPH</p>
+                                    </div>
+                                </div>
+                                <div id = "humidity" class = "d-flex">
+                                    <p>Humidity:</p>
+                                    <div class = "d-flex"style = "margin-left:0.5rem;">
+                                        <p id = "humidity-value">44.00</p>
+                                        <p id = "humidity-unit">%</p>
+                                    </div>
+                                </div>
+        
+                            </div>
+                        </div>
+                        <div class = "m-1 bg-dark p-3 rounded text-light">
+                            <h3>9/4/1999</h3>
+                            <p>☀️</p>
+                            <div>
+                                <div id = "temperature" class = "d-flex">
+                                    <p>Temp:</p>
+                                    <div class = "d-flex" style = "margin-left:0.5rem;">
+                                        <p id = "temperature-value">70.00</p>
+                                        <p id = "temperature-unit">°F</p>
+                                    </div>
+                                </div>
+                                <div id = "wind" class = "d-flex">
+                                    <p>Wind:</p>
+                                    <div class = "d-flex"style = "margin-left:0.5rem;">
+                                        <p id = "wind-value">70.00</p>
+                                        <p  style = "margin-left:0.25rem;" id = "wind-unit">MPH</p>
+                                    </div>
+                                </div>
+                                <div id = "humidity" class = "d-flex">
+                                    <p>Humidity:</p>
+                                    <div class = "d-flex"style = "margin-left:0.5rem;">
+                                        <p id = "humidity-value">44.00</p>
+                                        <p id = "humidity-unit">%</p>
+                                    </div>
+                                </div>
+        
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
         </div>
     </div>
 </body>
+<script
+      src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+      integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U="
+      crossorigin="anonymous"
+></script>
+<script src="https://unpkg.com/dayjs@1.10.7/plugin/utc.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="jquery-csv.js"></script>
     <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
