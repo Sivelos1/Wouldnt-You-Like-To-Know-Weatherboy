@@ -1,7 +1,7 @@
 dayjs.extend(window.dayjs_plugin_utc);
 
 var cities = {
-    
+    length:0
 }
 
 const apiKey = "8fedcd2d5567c42876d357a3887a8492"
@@ -23,6 +23,8 @@ var cityButtonList = $('#city-buttons');
 
 var errorMessage = $('#error');
 var forecastDisplay = $('#forecast-display');
+
+const historyLimit = 8;
 
 function revealErrorMessage(code){
     errorMessage.css('display','block');
@@ -88,7 +90,8 @@ function AddCity(data){
         lat:data.lat,
         long:data.long,
     }
-    cities[data.name] = obj;
+    cities[cities.length] = obj;
+    cities.length++;
     SaveCities();
 }
 
@@ -99,6 +102,7 @@ var UpdateWeather = function(lat,long){
         CheckStorage(data, "_weather");
         updateCurrentWeather(data);
         updateForecast(data);
+        updateCities();
     });
 }
 
@@ -116,6 +120,18 @@ var updateCurrentWeather = function(data){
     icon.attr('src',' https://openweathermap.org/img/wn/'+i+'.png')
 }
 
+var updateCities = function(){
+    cityButtonList.empty();
+    console.log(cities);
+    for (let index = cities.length-1; index > Math.max(cities.length-historyLimit-1,-1); index--) {
+        const element = cities[index*1];
+        var btn = $('<button>');
+        btn.addClass('w-100 city-btn ui-button ui-widget ui-corner-all m-1 rounded');
+        btn.text(element.name);
+        btn.on('click',AutoSearch);
+        cityButtonList.append(btn);
+    }
+}
 
 var CreateForecastCard = function(info){
     var holder = $('<div>');
@@ -185,21 +201,20 @@ var SearchForCity = function(event){
     var e = event.target;
     var search = $('#city-search');
     var name = search.val();
-    if(cities[name] === null || cities[name] === undefined){
-        console.log("Couldn't find city info in local storage. Searching...")
-        Get("http://api.openweathermap.org/geo/1.0/direct?q="+name+",&limit=5&appid="+apiKey, function(data){
+    Get("http://api.openweathermap.org/geo/1.0/direct?q="+name+",&limit=5&appid="+apiKey, function(data){
+        if(data[0]!== null && data[0] !== undefined){
             AddCity({
                 name:data[0].name,
                 lat:data[0].lat,
                 long:data[0].lon
             });
-            UpdateWeather(data[0].lat, data[0].lon);
-        });
-    }
-    else{
-        console.log("City info already in local storage.");
-        UpdateWeather(cities[name].lat, cities[name].long);
-    }
+        UpdateWeather(data[0].lat, data[0].lon);
+        }
+        else{
+            revealErrorMessage(404);
+        }   
+    
+    });
 }
 
 var AutoSearch = function(event){
