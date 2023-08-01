@@ -1,63 +1,10 @@
 dayjs.extend(window.dayjs_plugin_utc);
 
 var cities = {
-    [0]:{
-        name:"New York City",
-        location:{
-            lat:0,
-            long:0
-        }
-    },
-    [1]:{
-        name:"Atlanta",
-        location:{
-            lat:0,
-            long:0
-        }
-    },
-    [2]:{
-        name:"Seattle",
-        location:{
-            lat:0,
-            long:0
-        }
-    },
-    [3]:{
-        name:"San Francisco",
-        location:{
-            lat:0,
-            long:0
-        }
-    },
-    [4]:{
-        name:"Orlando",
-        location:{
-            lat:0,
-            long:0
-        }
-    },
-    [5]:{
-        name:"Chicago",
-        location:{
-            lat:0,
-            long:0
-        }
-    },
-    [6]:{
-        name:"Denver",
-        location:{
-            lat:0,
-            long:0
-        }
-    },
-    [7]:{
-        name:"Austin",
-        location:{
-            lat:0,
-            long:0
-        }
-    }
+    
 }
+
+const apiKey = "8fedcd2d5567c42876d357a3887a8492"
 
 var now = dayjs();
 
@@ -71,11 +18,27 @@ var tempVal = $('#temperature-value');
 var windVal = $('#wind-value');
 var humVal = $('#humidity-value');
 
+var searchButton = $('#search-btn');
+var cityButtonList = $('#city-buttons');
+
+var errorMessage = $('#error');
 var forecastDisplay = $('#forecast-display');
+
+function revealErrorMessage(code){
+    errorMessage.css('display','block');
+    errorMessage.text("Something went wrong! Please try again. Error: "+code);
+}
 
 function Get(url, onSuccess){
     fetch(url).then(function(response){
-        return response.json();
+        switch(response.status){
+            case(400):
+            case(404):
+            revealErrorMessage(response.status);
+            break;
+            default:
+                return response.json();
+        }
     })
     .then(function(data){
         onSuccess(data);
@@ -84,28 +47,56 @@ function Get(url, onSuccess){
 
 const storageID = 'WEATHER_DATA';
 
-function CheckStorage(data){
-    var result = localStorage.getItem(storageID);
+function CheckStorage(data, identifier){
+    var result = localStorage.getItem(storageID+identifier);
     if(result === null || result === undefined){
         result = data;
-        localStorage.setItem(storageID, JSON.stringify(data));
-        console.log("Found no data at "+storageID+"; saving parameters.")
+        localStorage.setItem(storageID+"_weather", JSON.stringify(data));
+        console.log("Found no data at "+storageID+identifier+"; saving parameters.")
     }
     else{
         if(result !== data){
-            console.log("Conflicting data; overwriting data saved to "+storageID);
-            localStorage.setItem(storageID, JSON.stringify(data));
+            console.log("Conflicting data; overwriting data saved to "+storageID+identifier);
+            localStorage.setItem(storageID+identifier, JSON.stringify(data));
             result = data;
         }
         return result;
     }
 }
 
+function LoadCities(){
+    console.log("Loading city info from "+storageID+"_cities...");
+    var t = localStorage.getItem(storageID+"_cities");
+    if(t!== null && t!== undefined){
+        console.log("Successfully loaded city info! Parsing...");
+        cities = JSON.parse(t);
+    }
+    else{
+        console.log("Could not find data at "+storageID+"_cities");
+        SaveCities();
+    }
+}
 
+function SaveCities(){
+    localStorage.setItem(storageID+"_cities", JSON.stringify(cities))
+    console.log("Saving city information to "+storageID+"_cities");
+}
 
-var Update = function(lat,long){
-    Get("https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+long+"&appid=8fedcd2d5567c42876d357a3887a8492&units=imperial", function(data){
-        CheckStorage(data);
+function AddCity(data){
+    var obj = {
+        name:data.name,
+        lat:data.lat,
+        long:data.long,
+    }
+    cities[data.name] = obj;
+    SaveCities();
+}
+
+var UpdateWeather = function(lat,long){
+    errorMessage.css('display','none')
+    Get("https://api.openweathermap.org/data/2.5/forecast?lat="+lat+"&lon="+long+"&appid="+apiKey+"&units=imperial", function(data){
+        console.log(data);
+        CheckStorage(data, "_weather");
         updateCurrentWeather(data);
         updateForecast(data);
     });
@@ -114,6 +105,7 @@ var Update = function(lat,long){
 var citySearch = $("#city-search");
 
 var updateCurrentWeather = function(data){
+    console.log(data);
     cityName.text(data.city.name);
     var today = data.list[0];
     date.text("("+now.format('M/D/YYYY')+")");
@@ -188,4 +180,57 @@ var updateForecast = function(data){
     }
 }
 
-Update(40.638378,-74.450897);
+var SearchForCity = function(event){
+    event.preventDefault();
+    var e = event.target;
+    var search = $('#city-search');
+    var name = search.val();
+    if(cities[name] === null || cities[name] === undefined){
+        console.log("Couldn't find city info in local storage. Searching...")
+        Get("http://api.openweathermap.org/geo/1.0/direct?q="+name+",&limit=5&appid="+apiKey, function(data){
+            AddCity({
+                name:data[0].name,
+                lat:data[0].lat,
+                long:data[0].lon
+            });
+            UpdateWeather(data[0].lat, data[0].lon);
+        });
+    }
+    else{
+        console.log("City info already in local storage.");
+        UpdateWeather(cities[name].lat, cities[name].long);
+    }
+}
+
+var AutoSearch = function(event){
+    event.preventDefault();
+    var e = $(event.target);
+    var name = e.text();
+    if(cities[name] === null || cities[name] === undefined){
+        console.log("Couldn't find city info in local storage. Searching...")
+        Get("http://api.openweathermap.org/geo/1.0/direct?q="+name+",&limit=5&appid="+apiKey, function(data){
+            AddCity({
+                name:data[0].name,
+                lat:data[0].lat,
+                long:data[0].lon
+            });
+            UpdateWeather(data[0].lat, data[0].lon);
+        });
+    }
+    else{
+        console.log("City info already in local storage.");
+        UpdateWeather(cities[name].lat, cities[name].long);
+    }
+}
+
+searchButton.on('click', SearchForCity);
+var children = cityButtonList.children();
+for (let index = 0; index < children.length; index++) {
+    const element = $(children[index]);
+    element.on('click',AutoSearch);
+    
+}
+
+LoadCities();
+
+UpdateWeather(40.638378,-74.450897);
